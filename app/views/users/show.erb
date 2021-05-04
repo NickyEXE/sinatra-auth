@@ -5,7 +5,9 @@
   <h3>Here's <%= @user.username %>'s recent messages:</h3>
   <div class=messages>
     <% @user.messages.each do |message| %>
-      <div class="message"><%="Written to #{message.character.name}: #{message.content}" %></div>
+      <div class="message">
+        <%="Written to <a href='/characters/#{message.character.id}'>#{message.character.name}</a>: #{message.content}" %>
+      </div>
     <% end %>
   </div>
 <% else %>

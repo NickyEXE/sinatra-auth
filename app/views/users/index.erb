@@ -1,7 +1,7 @@
 <h1>Here are all the users in the database!</h1>
 
-<div class="characters">
+<div class="cards">
 <% @users.each do |user|%>
-  <div class="character"><a href="/users/<%= user.id %>"><%= user.username %> </a></div>
+  <div class="card"><a href="/users/<%= user.id %>"><%= user.username %> </a></div>
 <% end %>
 </div>
