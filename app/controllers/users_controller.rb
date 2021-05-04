@@ -19,4 +19,9 @@ class UsersController < ApplicationController
     erb :"users/show"
   end
 
+  get "/users" do
+    @users = User.all
+    erb :"users/index"
+  end
+
 end
