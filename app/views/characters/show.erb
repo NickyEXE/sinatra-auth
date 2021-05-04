@@ -1,0 +1,20 @@
+<div class="character">
+<h1>Meet <%= @character.name %></h1>
+<img src=<%= @character.img %> alt=<%=@character.name%>/>
+<p>Birthday: <%=@character.birthday%></p>
+<p>Occupation: <%=@character.occupation%></p>
+<p>Status: <%=@character.status%></p>
+<p>Actor: <%=@character.actor%></p>
+<p>Nickname: <%=@character.nickname%></p>
+<a href="/characters/<%= @character.id %>/edit">Edit <%=@character.name%>'s information.</a>
+<form action="/characters/<%= @character.id %>" method="post">
+  <input type="hidden" name="_method" value="delete">
+  <input type="submit" value="Delete <%= @character.name %>">
+</form>
+</div>
+
+<div class=messages>
+  <% @character.messages.each do |message| %>
+    <div class="message"><%="#{message.user.username} says: #{message.content}" %></div>
+  <% end %>
+</div>

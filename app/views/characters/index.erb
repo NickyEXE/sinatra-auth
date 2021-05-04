@@ -1,0 +1,10 @@
+<h1>Here's Our Breaking Baddies who Need Breaking Buds</h1>
+
+<div class="cards">
+  <% @characters.each do |character| %>
+    <div class="card">
+      <p><a href="characters/<%= character.id %>"><%= character.name %></a></p>
+      <img src=<%= character.img %> alt="Picture of <%= character.name %>"/>
+    </div>
+  <% end %>
+</div>
