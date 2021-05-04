@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   has_many :messages
   has_many :characters, through: :messages
   has_secure_password
+  validates :username, uniqueness: :true
 
   # def password=(password)
   #   self.password_digest = BCrypt::Password.create(password)

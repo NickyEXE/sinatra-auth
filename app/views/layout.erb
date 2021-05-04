@@ -5,12 +5,31 @@
     <link rel="stylesheet" href="/stylesheets/styles.css">
   </head>
   <body>
-    <nav>
-      <a href="/characters">See all characters</a> |
-      <a href="/characters/new">Add a character</a> |
-      <a href="/users">See all users</a> |
-      <a href="/users/new">Add a new user</a>
-    </nav>
+    <% if logged_in %>
+      <nav>
+        Welcome <%= current_user.username %>!
+        <a href="/characters">See all characters</a> |
+        <a href="/characters/new">Add a character</a> |
+        <a href="/users">See all users</a> |
+        <a href="/logout">Logout</a>
+      </nav>
+    <% else %>
+      <nav>
+        <a href="/users/new">Signup</a> |
+        <a href="/login">Login</a>
+      </nav>
+    <% end %>
+
+
+    <% if @errors %>
+      <div class="errors">
+        <% @errors.each do |error| %>
+          <div class="error"><%= error %></div>
+        <% end %>
+      </div>
+    <% end %>
+
     <%= yield %>
+
   </body>
 </html>

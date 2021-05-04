@@ -22,14 +22,19 @@
 </div>
 <h3>Create a Message!</h3>
 <form action="/messages" method="post">
+
+  <%# Before auth%>
+  <% if false %>
   <label for="user">Who's Posting:</label><br>
   <select name="user_id" id="users">
     <% @users.each do |user| %>
       <option value="<%= user.id %>"><%= user.username %></option>
     <% end %>
   </select><br>
+  <% end %>
+
   <label for="content">Message:</label><br>
-  <input type="text" id="content" name="content"><br>
+  <textarea id="content" name="content"></textarea><br>
   <input type="hidden" name="character_id" value="<%= @character.id %>">
   <input type="submit" value="Send <%= @character.name %> a message!">
 </form>
