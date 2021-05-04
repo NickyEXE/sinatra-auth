@@ -15,6 +15,8 @@ class CharactersController < ApplicationController
   get "/characters/:id" do
     # whatever's put in the id section gets added to params at a key of id
     @character = Character.find(params[:id])
+    # this bit is just for a dropdown, it'll be refactored out when we have auth:
+    @users = User.all
     erb :"characters/show"
   end
 
