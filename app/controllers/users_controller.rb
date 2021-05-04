@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   post "/users" do
     @user = User.create(params)
     if @user.valid?
-      redirect_to "users/#{user.id}"
+      redirect "users/#{@user.id}"
     else
       erb :"users/new"
     end
