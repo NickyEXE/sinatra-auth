@@ -15,7 +15,9 @@
 
 <div class=messages>
   <% @character.messages.each do |message| %>
-    <div class="message"><%="#{message.user.username} says: #{message.content}" %></div>
+    <div class="message">
+      <%="<a href='/users/#{message.user.id}'>#{message.user.username}</a> says: #{message.content}" %>
+    </div>
   <% end %>
 </div>
 <h3>Create a Message!</h3>
