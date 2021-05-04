@@ -1,90 +1,79 @@
-# Intro to REST, MVC, and Forms
+# Intro to Auth
 
-## MVC - Model/View/Controller
+## Authentication
 
-The Model-View-Controller pattern provides separation of concerns where groups of files have specific jobs and interact with each other in very defined ways
-- Models - encapsulate the data specific to our application and define the logic and computation that manipulate and process that data
-- Views - user-facing part of a web application - this is the only part of the app that the user interacts with directly
-- Controllers - intermediary between our models and our views
+We must *never*, as developers, even in our own apps that we're building for fun, store passwords in plaintext.
 
-A common analogy is that the Model is the Chef, the Controller is the Waiter, and the View is the menu.
+Enter bcrypt, and has_secure_password.
 
-This is reflected in a proper Sinatra app's file structure:
+By saving a column to our database called password_digest that takes in a string, installing the bcrypt gem, and then adding has_secure_password to our model, we can quickly move to a very secure method of storing passwords.
 
-```
-├── Gemfile
-├── README.md
-├── app
-│   ├── controllers
-│   │   └── application_controller.rb
-│   ├── models
-│   │   └── model.rb
-│   └── views
-│       └── index.erb
-├── config
-│   └── environment.rb
-├── config.ru
-├── public
-│   └── stylesheets
-└── spec
-   ├── controllers
-   ├── features
-   ├── models
-   └── spec_helper.rb
+### How `bcrypt()` works
+This section stolen wholesale from the [bcrypt gem README](https://github.com/bcrypt-ruby/bcrypt-ruby/blob/master/README.md#how-bcrypt-works)
 
-```
+`bcrypt()` is a hashing algorithm designed by Niels Provos and David Mazières of the OpenBSD Project.
 
-## RESTful Routing
+### Background
 
-In a dissertation in 2000, Roy Fielding outlined how a well designed website behaved, with heavy reliance on the idea that the types of data that website served could be represented as "resources", and that there were specific things we normally wanted to do to each resource, namely: CREATE, READ, UPDATE, and DELETE.
+Hash algorithms take a chunk of data (e.g., your user's password) and create a "digital fingerprint," or hash, of it.
+Because this process is not reversible, there's no way to go from the hash back to the password.
 
-- Representational State Transfer provides a way of mapping HTTP verbs ( get, post, put, delete) and CRUD actions (create, read, update, delete) together
-- When we navigate from one page of our app to another, we are making a state transition, i.e. we are moving to the next state of our application
-- It is a conventional pattern to follow when structuring different routes for interacting with the server
-- Following RESTful convention makes it very clear what type of request each controller action will be handling
+In other words:
 
-There are seven RESTful routes, broken down as Create (C), Read (R), Update (U), and Delete (D) actions:
-- New: GET to display a form to create a new item (C)
-- Create: POST to create a form, usually ends with a redirect (C)
-- Index: GET to display a list of many items (R)
-- Show: GET to display one item (R)
-- Edit: GET to display a form to edit an existing item (U)
-- Update: PATCH/PUT to update the item in the database, usually ends with a redirect (U)
-- Delete: DELETE to delete an item in a database, usually ends with a redireect (D)
+    hash(p) #=> <unique gibberish>
 
-![RESTful Routes for Blogs](https://miro.medium.com/max/1750/1*M0hdLsgbzelOFuq-1BVH-g.png)
-[Stolen from this Blog](https://medium.com/@shubhangirajagrawal/the-7-restful-routes-a8e84201f206)
+You can store the hash and check it against a hash made of a potentially valid password:
 
-If you ever are curious what the RESTful routes are for a specific model, use this: http://www.restular.com/
+    <unique gibberish> =? hash(just_entered_password)
 
-## Setting Up Your App
+### Rainbow Tables
 
-All controllers other than ApplicationController should have the resource pluralized, and inherit from ApplicationController rather than Sinatra::Base
+But even this has weaknesses -- attackers can just run lists of possible passwords through the same algorithm, store the
+results in a big database, and then look up the passwords by their hash:
 
-```ruby
+    PrecomputedPassword.find_by_hash(<unique gibberish>).password #=> "secret1"
 
-class ApplicationController < Sinatra::Base
+### Salts
+
+The solution to this is to add a small chunk of random data -- called a salt -- to the password before it's hashed:
+
+    hash(salt + p) #=> <really unique gibberish>
+
+The salt is then stored along with the hash in the database, and used to check potentially valid passwords:
+
+    <really unique gibberish> =? hash(salt + just_entered_password)
+
+bcrypt-ruby automatically handles the storage and generation of these salts for you.
+
+Adding a salt means that an attacker has to have a gigantic database for each unique salt -- for a salt made of 4
+letters, that's 456,976 different databases. Pretty much no one has that much storage space, so attackers try a
+different, slower method -- throw a list of potential passwords at each individual password:
+
+    hash(salt + "aadvark") =? <really unique gibberish>
+    hash(salt + "abacus")  =? <really unique gibberish>
+    etc.
+
+This is much slower than the big database approach, but most hash algorithms are pretty quick -- and therein lies the
+problem. Hash algorithms aren't usually designed to be slow, they're designed to turn gigabytes of data into secure
+fingerprints as quickly as possible. `bcrypt()`, though, is designed to be computationally expensive:
+
+    Ten thousand iterations:
+                 user     system      total        real
+    md5      0.070000   0.000000   0.070000 (  0.070415)
+    bcrypt  22.230000   0.080000  22.310000 ( 22.493822)
+
+If an attacker was using Ruby to check each password, they could check ~140,000 passwords a second with MD5 but only
+~450 passwords a second with `bcrypt()`.
+
+## Authorization
+
+### The Session:
+
+The session is a hash.
+
   configure do
+    set(:views, 'app/views')
     set :public_folder, 'public'
-    set :views, 'app/views'
+    enable :sessions
+    set :session_secret, <YOUR SECRET>
   end
-
-  ...
-
-end
-```
-
-```ruby
-class MovieController < ApplicationController
- ...
-end
-```
-
-Include in config.ru like this:
-
-```ruby
-#config.ru
-
-use MovieController
-run ApplicationController
-```
