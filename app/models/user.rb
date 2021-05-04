@@ -4,8 +4,20 @@
 class User < ActiveRecord::Base
   has_many :messages
   has_many :characters, through: :messages
+  has_secure_password
 
   # attr_accessor :username
+
+
+  # def password=(string)
+  #   self.password_digest = BCrypt::Password.create(string)
+  # end
+
+  # def authenticate(password)
+  #   bcrypt = BCrypt::Password.new(self.password_digest)
+  #   bcrypt == password && self
+  # end
+
 
   # @@all = []
 

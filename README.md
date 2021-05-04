@@ -1,5 +1,12 @@
 # Intro to Auth
 
+6:25: Adding cost!
+
+## Authorization
+
+Give allowance for something
+
+
 ## Authentication
 
 We must *never*, as developers, even in our own apps that we're building for fun, store passwords in plaintext.
