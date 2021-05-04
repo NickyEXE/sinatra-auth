@@ -1,0 +1,7 @@
+<h1>Here are all the users in the database!</h1>
+
+<div class="characters">
+<% @users.each do |user|%>
+  <div class="character"><a href="/users/<%= user.id %>"><%= user.username %> </a></div>
+<% end %>
+</div>
