@@ -1,9 +1,13 @@
 <h1><%= @user.username %></h1>
 
-<h3>Here's <%= @user.username %>'s recent messages.</h3>
 
-<div class=messages>
-<% @user.messages.each do |message| %>
-  <div class="message"><%="Written to #{message.character.name}: #{message.content}" %></div>
+<% if @user.messages.any? %>
+  <h3>Here's <%= @user.username %>'s recent messages:</h3>
+  <div class=messages>
+    <% @user.messages.each do |message| %>
+      <div class="message"><%="Written to #{message.character.name}: #{message.content}" %></div>
+    <% end %>
+  </div>
+<% else %>
+  <h3><%= @user.username %> hasn't written any messages yet!</h3>
 <% end %>
-</div>
