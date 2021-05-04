@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   has_many :messages
   has_many :characters, through: :messages
   has_secure_password
+  validates :username, uniqueness: :true
 
   # attr_accessor :username
 

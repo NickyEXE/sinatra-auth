@@ -6,11 +6,27 @@
   </head>
   <body>
     <nav>
-      <a href="/characters">See all characters</a> |
-      <a href="/characters/new">Add a character</a> |
-      <a href="/users">See all users</a> |
-      <a href="/users/new">Add a new user</a>
+      <% if logged_in? %>
+        Welcome <%= current_user.username %>
+        <a href="/characters">See all characters</a> |
+        <a href="/characters/new">Add a character</a> |
+        <a href="/users">See all users</a> |
+        <a href="/logout">Logout</a>
+      <% else %>
+        <a href="/login">Login</a> |
+        <a href="/users/new">Signup</a>
+      <% end %>
+
+
     </nav>
+    <% if @errors %>
+      <ul>
+      <% @errors.each do |error| %>
+        <li><%= error %></li>
+      <% end %>
+      </ul>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

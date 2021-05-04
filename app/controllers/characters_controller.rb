@@ -23,6 +23,7 @@ class CharactersController < ApplicationController
   # Create
 
   post "/characters" do
+    redirect_if_not_logged_in
     character = Character.create(params["character"])
     redirect "/characters/#{character.id}"
   end
@@ -51,6 +52,7 @@ class CharactersController < ApplicationController
   end
 
   get "/cheese" do
+    session[:cheese] = "gouda"
     erb :"characters/cheese"
   end
 

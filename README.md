@@ -1,5 +1,13 @@
 # Intro to Auth
 
+## Using this app
+
+Create a file in the root directory named `.env`. In it, define the session secret with
+
+```
+SESSION_SECRET=<Your secret here>
+```
+
 6:25: Adding cost!
 
 ## Authorization

@@ -20,16 +20,15 @@
     </div>
   <% end %>
 </div>
-<h3>Create a Message!</h3>
-<form action="/messages" method="post">
-  <label for="user">Who's Posting:</label><br>
-  <select name="user_id" id="users">
-    <% @users.each do |user| %>
-      <option value="<%= user.id %>"><%= user.username %></option>
-    <% end %>
-  </select><br>
-  <label for="content">Message:</label><br>
-  <input type="text" id="content" name="content"><br>
-  <input type="hidden" name="character_id" value="<%= @character.id %>">
-  <input type="submit" value="Send <%= @character.name %> a message!">
-</form>
+
+<% if logged_in? %>
+  <h3>Create a Message!</h3>
+  <form action="/messages" method="post">
+    <label for="content">Message:</label><br>
+    <input type="text" id="content" name="content"><br>
+    <input type="hidden" name="character_id" value="<%= @character.id %>">
+    <input type="submit" value="Send <%= @character.name %> a message!">
+  </form>
+<% else %>
+  <h3><a href="/login">Login</a> to send <%= @character.name %> a message!</h3>
+<% end %>
